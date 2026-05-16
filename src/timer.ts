@@ -7,7 +7,9 @@ export class Timer {
 	private isRunning: boolean
 	private readonly settings: PluginSettings
 	private mode: "work" | "break"
-	private secondsLeft: number
+	// Total secs needed to track the amount initial of seconds
+	private totalSecs: number
+	private secsLeft: number
 	private onTickCallbacks: updateCallback[]
 	private onToggleCallbacks: updateCallback[]
 	private intervalId: number | undefined
@@ -34,12 +36,15 @@ export class Timer {
 		// First, try to restore from previous session if it wasn't explicitly stopped
 		// Otherwise, simply use a value from settings
 
-		// TODO: recover previous session
-
-		this.secondsLeft =
+		this.totalSecs =
 			this.mode == "work"
 				? this.settings.workDurationSecs
 				: this.settings.breakDurationSecs
+
+		// TODO: recover previous session
+
+		// otherwise
+		this.secsLeft = this.totalSecs
 	}
 
 	// TODO: if a property is not private, it can be changed
@@ -47,11 +52,8 @@ export class Timer {
 		return this.isRunning
 	}
 
-	getModeTotalSecs(): number {
-		if (this.mode == "work") {
-			return this.settings.workDurationSecs
-		}
-		return this.settings.breakDurationSecs
+	getTotalSecs(): number {
+		return this.totalSecs
 	}
 
 	getCurrentMode(): string {
@@ -62,7 +64,7 @@ export class Timer {
 		secs: number
 		HFTime: string
 	} {
-		let seconds = this.secondsLeft
+		let seconds = this.secsLeft
 		return {
 			secs: seconds,
 			HFTime: secondsToHF(seconds),
@@ -100,9 +102,9 @@ export class Timer {
 	}
 
 	private tick(): void {
-		this.secondsLeft--
+		this.secsLeft--
 		this.runOnTickCallbacks()
-		if (this.secondsLeft == 0) {
+		if (this.secsLeft == 0) {
 			notify("Time's up")
 			if (!this.settings.continueAfterTimeIsUp) {
 				this.switch()

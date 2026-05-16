@@ -77,7 +77,6 @@ export class CustomView extends ItemView {
 
 		this.timer.registerUpdateCallback("tick", (HFTime: string) => {
 			timeContainer.innerText = HFTime
-			// TODO: situation when minutes are changed while timer is running
 			this.setElapsedCircleReach()
 		})
 		this.timer.registerUpdateCallback("toggle", () => {
@@ -96,8 +95,7 @@ export class CustomView extends ItemView {
 
 	setElapsedCircleReach() {
 		this.elapsedCircle.style.strokeDashoffset = String(
-			(this.timer.getTimeLeft().secs / this.timer.getModeTotalSecs()) *
-			440,
+			(this.timer.getTimeLeft().secs / this.timer.getTotalSecs()) * 440,
 		)
 	}
 
