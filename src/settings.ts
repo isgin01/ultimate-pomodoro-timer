@@ -1,8 +1,8 @@
 import {
 	type App,
-	type ToggleComponent,
 	PluginSettingTab,
 	Setting,
+	type ToggleComponent,
 } from "obsidian"
 import type BetterPomodoroPlugin from "./main"
 import * as statusBar from "./status-bar"
@@ -11,20 +11,22 @@ export type PluginSettings = {
 	workDurationSecs: number
 	breakDurationSecs: number
 	systemNotificationsPreferred: boolean
+	playSound: boolean
 	continueAfterTimeIsUp: boolean
 	showStatusBar: boolean
 	showCustomView: boolean
-	customNotificationSoundPath: string
+	notificationSoundPath: string
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	workDurationSecs: 50 * 60,
 	breakDurationSecs: 10 * 60,
 	systemNotificationsPreferred: false,
-	continueAfterTimeIsUp: false,
+	playSound: true,
+	continueAfterTimeIsUp: true,
 	showCustomView: true,
 	showStatusBar: true,
-	customNotificationSoundPath: "",
+	notificationSoundPath: "",
 }
 
 export class BetterPomodoroSettingsTab extends PluginSettingTab {
@@ -40,10 +42,10 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 
 		containerEl.empty()
 
-		new Setting(containerEl).setName("Status Bar").setHeading()
+		new Setting(containerEl).setName("Status bar").setHeading()
 
 		new Setting(containerEl)
-			.setName("Show Status Bar")
+			.setName("Show status bar")
 			.addToggle((component: ToggleComponent) => {
 				component
 					.setValue(this.plugin.settings.showStatusBar)
@@ -58,10 +60,10 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 					})
 			})
 
-		new Setting(containerEl).setName("Timer View").setHeading()
+		new Setting(containerEl).setName("Timer view").setHeading()
 
 		new Setting(containerEl)
-			.setName("Show Custom View")
+			.setName("Show custom view")
 			.addToggle((component: ToggleComponent) => {
 				component
 					.setValue(this.plugin.settings.showCustomView)
@@ -79,7 +81,7 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 					})
 			})
 
-		new Setting(containerEl).setName("Timer options").setHeading()
+		new Setting(containerEl).setName("Timer").setHeading()
 
 		new Setting(containerEl).setName("Work duration").addText((text) => {
 			text.setPlaceholder("Enter time in minutes")
@@ -142,7 +144,17 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 					})
 			})
 
-		// TODO: sound toggle
+		// TODO: "time is up" sounds weird
+		new Setting(containerEl)
+			.setName("Play sound when time is up")
+			.addToggle((component: ToggleComponent) => {
+				component
+					.setValue(this.plugin.settings.playSound)
+					.onChange(async (newValue: boolean) => {
+						this.plugin.settings.playSound = newValue
+						await this.plugin.saveSettings()
+					})
+			})
 
 		// TODO: sound path
 		// new Settings(containerEl)

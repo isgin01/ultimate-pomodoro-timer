@@ -4,8 +4,9 @@ import { notify } from "./utils"
 export type updateCallback = (time?: string) => void
 
 export class Timer {
-	private isRunning: boolean
 	private readonly settings: PluginSettings
+
+	private isRunning: boolean
 	private mode: "work" | "break"
 	// Total secs needed to track the amount initial of seconds
 	private totalSecs: number
@@ -106,9 +107,19 @@ export class Timer {
 		this.runOnTickCallbacks()
 		if (this.secsLeft == 0) {
 			notify("Time's up")
+
+			this.playSound()
+
 			if (!this.settings.continueAfterTimeIsUp) {
 				this.switch()
 			}
+		}
+	}
+
+	private playSound(): void {
+		if (this.settings.playSound) {
+			const sound = new Audio(this.settings.notificationSoundPath)
+			void sound.play()
 		}
 	}
 
@@ -131,8 +142,7 @@ export class Timer {
 	}
 
 	private runOnTickCallbacks() {
-		let timeLeft = this.getTimeLeft()
-		this.onTickCallbacks.forEach((cb) => cb(timeLeft.HFTime))
+		this.onTickCallbacks.forEach((cb) => cb(this.getTimeLeft().HFTime))
 	}
 
 	private runOnToggleCallbacks() {

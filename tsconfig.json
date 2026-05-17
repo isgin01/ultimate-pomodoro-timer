@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"paths": {"*": ["./src/*"]},
+		"paths": { "*": ["./src/*"] },
 		"moduleResolution": "node",
 		"inlineSourceMap": true,
 		"inlineSources": true,

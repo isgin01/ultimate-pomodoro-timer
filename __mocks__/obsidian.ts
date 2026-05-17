@@ -1,7 +1,7 @@
-export class Notice { }
+export class Notice {}
 export class Menu {
-	addItem() { }
-	showAtMouseEvent() { }
+	addItem() {}
+	showAtMouseEvent() {}
 }
 export class ItemView {
 	public containerEl: any
@@ -21,5 +21,5 @@ export class ItemView {
 		this.containerEl = mock
 	}
 }
-export class PluginSettingTab { }
-export function setIcon() { }
+export class PluginSettingTab {}
+export function setIcon() {}
