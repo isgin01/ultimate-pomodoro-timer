@@ -1,5 +1,5 @@
 import { type PluginSettings } from "settings"
-import { notify } from "./utils"
+import { Notice } from "obsidian"
 
 export type updateCallback = (time?: string) => void
 
@@ -48,7 +48,6 @@ export class Timer {
 		this.secsLeft = this.totalSecs
 	}
 
-	// TODO: if a property is not private, it can be changed
 	getIsRunning() {
 		return this.isRunning
 	}
@@ -106,20 +105,19 @@ export class Timer {
 		this.secsLeft--
 		this.runOnTickCallbacks()
 		if (this.secsLeft == 0) {
-			notify("Time's up")
+			this.notify("Time has elapsed")
 
-			this.playSound()
-
-			if (!this.settings.continueAfterTimeIsUp) {
+			if (!this.settings.continueAfterTimeHasElapsed) {
 				this.switch()
 			}
 		}
 	}
 
-	private playSound(): void {
-		if (this.settings.playSound) {
-			const sound = new Audio(this.settings.notificationSoundPath)
-			void sound.play()
+	private notify(text: string): void {
+		if (this.settings.systemNotificationsPreferred) {
+			systemNotify(text)
+		} else {
+			obsidianNotify(text)
 		}
 	}
 
@@ -152,6 +150,19 @@ export class Timer {
 	destroy(): void {
 		// TODO: add time left saving
 	}
+}
+
+function systemNotify(text: string) {
+	var { Notification } = require("electron").remote
+
+	new Notification({
+		title: "Timer",
+		body: text,
+	}).show()
+}
+
+function obsidianNotify(text: string) {
+	new Notice(text)
 }
 
 export function secondsToHF(secondsTotal: number) {

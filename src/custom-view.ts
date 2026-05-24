@@ -85,8 +85,12 @@ export class CustomView extends ItemView {
 		})
 	}
 
+	private updateModeBanner() {
+		var m = this.timer.getCurrentMode()
+	}
+
 	// TODO: it needs to be updated when the timer stops by itself
-	updateToggleBtnIcon() {
+	private updateToggleBtnIcon() {
 		if (this.timer.getIsRunning()) {
 			setIcon(this.toggleBtn, "pause")
 		} else {
@@ -94,7 +98,7 @@ export class CustomView extends ItemView {
 		}
 	}
 
-	setElapsedCircleReach() {
+	private setElapsedCircleReach() {
 		this.elapsedCircle.style.strokeDashoffset = String(
 			(this.timer.getTimeLeft().secs / this.timer.getTotalSecs()) * 440,
 		)

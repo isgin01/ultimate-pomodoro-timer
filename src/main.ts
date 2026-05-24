@@ -77,11 +77,8 @@ export default class BetterPomodoroPlugin extends Plugin {
 			var leaves = workspace.getLeavesOfType(PLUGIN_CUSTOM_VIEW_ID)
 			if (!leaves.length) {
 				var leaf = workspace.getRightLeaf(false)
-				// TODO: is it ok to put ? here
 				void leaf?.setViewState({
 					type: PLUGIN_CUSTOM_VIEW_ID,
-					// TODO: what does "active" really do?
-					// active: true,
 				})
 			}
 		}
@@ -89,8 +86,6 @@ export default class BetterPomodoroPlugin extends Plugin {
 
 	hideCustomView() {
 		var { workspace } = this.app
-		// var leaves = workspace.getLeavesOfType(PLUGIN_CUSTOM_VIEW_ID);
-		// leaves.map((l) => { l.detach() })
 		workspace.detachLeavesOfType(PLUGIN_CUSTOM_VIEW_ID)
 	}
 

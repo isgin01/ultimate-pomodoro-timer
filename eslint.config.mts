@@ -13,13 +13,11 @@ export default tseslint.config(
 				projectService: {
 					allowDefaultProject: ["eslint.config.js", "manifest.json"],
 				},
-				// TODO: what are these errors #1
 				tsconfigRootDir: import.meta.dirname,
 				extraFileExtensions: [".json"],
 			},
 		},
 	},
-	// TODO: what are these errors #2
 	...obsidianmd.configs.recommended,
 	{
 		rules: {

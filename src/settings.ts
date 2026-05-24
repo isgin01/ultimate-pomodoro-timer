@@ -11,22 +11,18 @@ export type PluginSettings = {
 	workDurationSecs: number
 	breakDurationSecs: number
 	systemNotificationsPreferred: boolean
-	playSound: boolean
-	continueAfterTimeIsUp: boolean
+	continueAfterTimeHasElapsed: boolean
 	showStatusBar: boolean
 	showCustomView: boolean
-	notificationSoundPath: string
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	workDurationSecs: 50 * 60,
 	breakDurationSecs: 10 * 60,
 	systemNotificationsPreferred: false,
-	playSound: true,
-	continueAfterTimeIsUp: true,
+	continueAfterTimeHasElapsed: true,
 	showCustomView: true,
 	showStatusBar: true,
-	notificationSoundPath: "",
 }
 
 export class BetterPomodoroSettingsTab extends PluginSettingTab {
@@ -42,7 +38,7 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 
 		containerEl.empty()
 
-		new Setting(containerEl).setName("Status bar").setHeading()
+		new Setting(containerEl).setName("Visibility").setHeading()
 
 		new Setting(containerEl)
 			.setName("Show status bar")
@@ -53,14 +49,11 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 						this.plugin.settings.showStatusBar = val
 						await this.plugin.saveSettings()
 
-						// TODO:
 						this.plugin.reflectSettingsChange((ctx) => {
 							statusBar.alterVisibility(val, ctx.statusBarItem)
 						})
 					})
 			})
-
-		new Setting(containerEl).setName("Timer view").setHeading()
 
 		new Setting(containerEl)
 			.setName("Show custom view")
@@ -120,12 +113,13 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 		})
 
 		new Setting(containerEl)
-			.setName("Continue running after time is up")
+			.setName("Continue running after time has elapsed")
 			.addToggle((component: ToggleComponent) => {
 				component
-					.setValue(this.plugin.settings.continueAfterTimeIsUp)
+					.setValue(this.plugin.settings.continueAfterTimeHasElapsed)
 					.onChange(async (newValue: boolean) => {
-						this.plugin.settings.continueAfterTimeIsUp = newValue
+						this.plugin.settings.continueAfterTimeHasElapsed =
+							newValue
 						await this.plugin.saveSettings()
 					})
 			})
@@ -143,26 +137,6 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings()
 					})
 			})
-
-		// TODO: "time is up" sounds weird
-		new Setting(containerEl)
-			.setName("Play sound when time is up")
-			.addToggle((component: ToggleComponent) => {
-				component
-					.setValue(this.plugin.settings.playSound)
-					.onChange(async (newValue: boolean) => {
-						this.plugin.settings.playSound = newValue
-						await this.plugin.saveSettings()
-					})
-			})
-
-		// TODO: sound path
-		// new Settings(containerEl)
-		// 	.setName("Custom notification sound")
-		// 	.setValue("")
-		// 	.setPlaceholder("path to the sound")
-
-		// TODO: add button to check the sound
 	}
 }
 
