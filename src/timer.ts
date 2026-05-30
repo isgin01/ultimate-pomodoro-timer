@@ -80,13 +80,13 @@ export class Timer {
 	}
 
 	toggle(): void {
-		this.runOnToggleCallbacks()
-
 		if (this.isRunning) {
 			this.stop()
 		} else {
 			this.start()
 		}
+
+		this.runOnToggleCallbacks()
 	}
 
 	private start(): void {
@@ -105,11 +105,12 @@ export class Timer {
 		this.secsLeft--
 		this.runOnTickCallbacks()
 		if (this.secsLeft == 0) {
-			this.notify("Time has elapsed")
-
 			if (!this.settings.continueAfterTimeHasElapsed) {
 				this.switch()
 			}
+
+			// TODO: Custom user message template
+			this.notify(`Time has elapsed. Next mode: ${this.mode}`)
 		}
 	}
 

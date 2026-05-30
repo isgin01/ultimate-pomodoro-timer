@@ -72,7 +72,6 @@ export class CustomView extends ItemView {
 		this.setToggleBtnIcon()
 		this.toggleBtn.addEventListener("click", () => {
 			this.timer.toggle()
-			this.setToggleBtnIcon()
 		})
 		this.timer.registerUpdateCallback("toggle", () => {
 			this.setToggleBtnIcon()
@@ -85,7 +84,6 @@ export class CustomView extends ItemView {
 		setIcon(this.resetBtn, "reset")
 		this.resetBtn.addEventListener("click", () => {
 			this.timer.reset()
-			this.setToggleBtnIcon()
 		})
 
 		this.switchBtn = btnContainer.createEl("button", {
@@ -95,13 +93,12 @@ export class CustomView extends ItemView {
 		setIcon(this.switchBtn, "switch")
 		this.switchBtn.addEventListener("click", () => {
 			this.timer.switch()
-			this.setToggleBtnIcon()
 		})
 	}
 
 	setColors() {
 		this.remainingTimeCircle.style.fill =
-			this.settings.customViewColors.default
+			this.settings.customViewColors.remaining
 		this.elapsedTimeCircle.style.stroke =
 			this.settings.customViewColors.elapsed
 	}

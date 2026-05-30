@@ -9,7 +9,7 @@ export type PluginSettings = {
 	continueAfterTimeHasElapsed: boolean
 	showStatusBar: boolean
 	showCustomView: boolean
-	customViewColors: { default: string; elapsed: string }
+	customViewColors: { remaining: string; elapsed: string }
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -19,7 +19,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	continueAfterTimeHasElapsed: true,
 	showCustomView: true,
 	showStatusBar: true,
-	customViewColors: { default: "#ff1700;", elapsed: "#06ff00" },
+	customViewColors: { remaining: "#ff1700;", elapsed: "#06ff00" },
 }
 
 export class BetterPomodoroSettingsTab extends PluginSettingTab {
@@ -52,8 +52,12 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 					})
 			})
 
+		// TODO: render inactive
+
+		new Setting(containerEl).setName("Custom View").setHeading()
+
 		new Setting(containerEl)
-			.setName("Show custom view")
+			.setName("Color for remaining time")
 			.addToggle((component) => {
 				component
 					.setValue(this.plugin.settings.showCustomView)
@@ -72,12 +76,13 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
-			.setName("Set custom view colors")
+			.setName("Color for elapsed time")
 			.addColorPicker((component) => {
 				component
-					.setValue(this.plugin.settings.customViewColors.default)
+					.setValue(this.plugin.settings.customViewColors.remaining)
 					.onChange(async (newColor: string) => {
-						this.plugin.settings.customViewColors.default = newColor
+						this.plugin.settings.customViewColors.remaining =
+							newColor
 						await this.plugin.saveSettings()
 
 						this.plugin.reflectSettingsChange((ctx) => {
@@ -99,6 +104,24 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 							ctx.customView.setColors()
 						})
 					})
+			})
+
+		new Setting(containerEl)
+			.setName("Reset colors")
+			.addButton((component) => {
+				component.setButtonText("Reset").onClick(async () => {
+					this.plugin.settings.customViewColors.elapsed =
+						DEFAULT_SETTINGS.customViewColors.elapsed
+
+					this.plugin.settings.customViewColors.remaining =
+						DEFAULT_SETTINGS.customViewColors.remaining
+
+					await this.plugin.saveSettings()
+
+					this.plugin.reflectSettingsChange((ctx) => {
+						ctx.customView.setColors()
+					})
+				})
 			})
 
 		new Setting(containerEl).setName("Timer").setHeading()
