@@ -1,6 +1,7 @@
 import * as statusBar from "./status-bar"
 import { type App, PluginSettingTab, Setting, type HexString } from "obsidian"
 import type BetterPomodoroPlugin from "./main"
+import { playSound } from "sound"
 
 export type PluginSettings = {
 	workDurationSecs: number
@@ -10,6 +11,8 @@ export type PluginSettings = {
 	showStatusBar: boolean
 	showCustomView: boolean
 	customViewColors: { remaining: HexString; elapsed: HexString }
+	playNotificationSound: boolean
+	customNotificationSound: string
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -20,6 +23,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	showCustomView: true,
 	showStatusBar: true,
 	customViewColors: { remaining: "#ff1700", elapsed: "#06ff00" },
+	playNotificationSound: true,
+	customNotificationSound: "",
 }
 
 export class BetterPomodoroSettingsTab extends PluginSettingTab {
@@ -192,6 +197,43 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 					.onChange(async (newValue: boolean) => {
 						this.plugin.settings.systemNotificationsPreferred =
 							newValue
+						await this.plugin.saveSettings()
+					})
+			})
+
+		new Setting(containerEl)
+			.setName("Play notification sound")
+			.addToggle((component) => {
+				component
+					.setValue(this.plugin.settings.systemNotificationsPreferred)
+					.onChange(async (newValue: boolean) => {
+						this.plugin.settings.systemNotificationsPreferred =
+							newValue
+						await this.plugin.saveSettings()
+					})
+			})
+
+		new Setting(containerEl)
+			.setName("Custom Notification Sound")
+			.setDesc("A file inside the vault")
+			.addButton((component) => {
+				component
+					.setButtonText("Check audio")
+					.setDisabled(!this.plugin.settings.customNotificationSound)
+					.onClick(() => {
+						var sound = this.plugin.getFile(
+							this.plugin.settings.customNotificationSound,
+						)
+						if (sound) {
+							playSound(sound)
+						}
+					})
+			})
+			.addText((component) => {
+				component
+					.setValue(this.plugin.settings.customNotificationSound)
+					.onChange(async (newValue: string) => {
+						this.plugin.settings.customNotificationSound = newValue
 						await this.plugin.saveSettings()
 					})
 			})
