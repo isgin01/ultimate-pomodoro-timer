@@ -1,7 +1,10 @@
 import { type PluginSettings } from "settings"
 import { Notice } from "obsidian"
+import { playSound } from "sound"
 
 export type updateCallback = (time?: string) => void
+
+type GetFile = (path: string) => string
 
 export class Timer {
 	private readonly settings: PluginSettings
@@ -14,20 +17,19 @@ export class Timer {
 	private onTickCallbacks: updateCallback[]
 	private onToggleCallbacks: updateCallback[]
 	private intervalId: number | undefined
+	private getFile: GetFile
 
-	constructor(settings: PluginSettings) {
+	constructor(settings: PluginSettings, getFile: GetFile) {
 		// It's important to make sure that seetings are assigned first since
 		// they can be used for other props initialization
 		this.settings = settings
 
-		// public props
 		this.isRunning = false
-
-		// private props
 		// TODO: load the previous mode instead
 		this.mode = "work"
 		this.onTickCallbacks = []
 		this.onToggleCallbacks = []
+		this.getFile = getFile
 
 		this.resetSecondsCount(true)
 	}
@@ -119,6 +121,10 @@ export class Timer {
 			systemNotify(text)
 		} else {
 			obsidianNotify(text)
+		}
+
+		if (this.settings.playNotificationSound) {
+			playSound(this.getFile(this.settings.customNotificationSound))
 		}
 	}
 

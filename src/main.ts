@@ -5,7 +5,7 @@ import {
 	type PluginSettings,
 } from "./settings"
 import { CustomView, PLUGIN_CUSTOM_VIEW_ID } from "./custom-view"
-import { Plugin } from "obsidian"
+import { Plugin, TFile } from "obsidian"
 import { Timer } from "./timer"
 
 export default class BetterPomodoroPlugin extends Plugin {
@@ -14,10 +14,20 @@ export default class BetterPomodoroPlugin extends Plugin {
 	statusBarItem: HTMLElement
 	// Needed to reflect settings
 	customView: CustomView
+	getFile: (path: string) => string
 
 	async onload() {
 		await this.loadSettings()
-		this.timer = new Timer(this.settings)
+
+		this.getFile = (path: string) => {
+			var aFile = this.app.vault.getAbstractFileByPath(path)
+			if (aFile instanceof TFile) {
+				return this.app.vault.getResourcePath(aFile)
+			}
+			return ""
+		}
+
+		this.timer = new Timer(this.settings, this.getFile)
 
 		this.registerView(PLUGIN_CUSTOM_VIEW_ID, (leaf) => {
 			this.customView = new CustomView(leaf, this.timer, this.settings)
