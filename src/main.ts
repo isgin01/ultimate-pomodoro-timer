@@ -14,20 +14,15 @@ export default class BetterPomodoroPlugin extends Plugin {
 	statusBarItem: HTMLElement
 	// Needed to reflect settings
 	customView: CustomView
-	getFile: (path: string) => string
 
 	async onload() {
 		await this.loadSettings()
 
-		this.getFile = (path: string) => {
-			var aFile = this.app.vault.getAbstractFileByPath(path)
-			if (aFile instanceof TFile) {
-				return this.app.vault.getResourcePath(aFile)
-			}
-			return ""
-		}
-
-		this.timer = new Timer(this.settings, this.getFile)
+		this.timer = new Timer(
+			this.settings,
+			// Use closure in order to avoid accessing incorrect "this"
+			(path: string) => this.getFile(path),
+		)
 
 		this.registerView(PLUGIN_CUSTOM_VIEW_ID, (leaf) => {
 			this.customView = new CustomView(leaf, this.timer, this.settings)
@@ -35,7 +30,7 @@ export default class BetterPomodoroPlugin extends Plugin {
 		})
 
 		this.statusBarItem = this.addStatusBarItem()
-		statusBar.build(this.statusBarItem, this.timer)
+		statusBar.buildStatusBar(this.statusBarItem, this.timer)
 		statusBar.alterVisibility(
 			this.settings.showStatusBar,
 			this.statusBarItem,
@@ -104,5 +99,13 @@ export default class BetterPomodoroPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings)
+	}
+
+	getFile(path: string) {
+		var aFile = this.app.vault.getAbstractFileByPath(path)
+		if (aFile instanceof TFile) {
+			return this.app.vault.getResourcePath(aFile)
+		}
+		return ""
 	}
 }

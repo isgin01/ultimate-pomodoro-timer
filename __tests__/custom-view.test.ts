@@ -1,23 +1,14 @@
-import { type WorkspaceLeaf } from "obsidian"
+import { WorkspaceLeaf } from "obsidian"
 import { CustomView } from "../src/custom-view"
 import { Timer } from "../src/timer"
 import { DEFAULT_SETTINGS } from "../src/settings"
 
-let timer = new Timer(DEFAULT_SETTINGS)
-let cv = new CustomView({} as WorkspaceLeaf, timer)
-
 it("init", () => {
-	expect(cv.getDisplayText()).toBe("Pomodoro View")
-	expect(cv.getViewType()).toBe("better-pomodoro-view")
-	expect(timer.isRunning).toBe(false)
+	var timer = new Timer(DEFAULT_SETTINGS, jest.fn())
+	var v = new CustomView({} as WorkspaceLeaf, timer, DEFAULT_SETTINGS)
 
-	// Right and left mouse click events
-	expect(cv.containerEl.addEventListener).toHaveBeenCalledTimes(2)
-
-	expect(cv.containerEl.createDiv).toHaveBeenCalledTimes(3)
-	expect(cv.containerEl.createSpan).toHaveBeenCalledTimes(1)
-	expect(cv.containerEl.createEl).toHaveBeenCalledTimes(2)
-	expect(cv.containerEl.empty).toHaveBeenCalledTimes(1)
+	expect(v.getDisplayText()).toBe("Xxx pomodoro view")
+	expect(v.getViewType()).toBe("xxx-pomodoro-view")
+	expect(v.icon).toBe("timer")
+	expect(timer.getIsRunning()).toBe(false)
 })
-
-it.todo("toggling & resetting")

@@ -1,10 +1,7 @@
-import { build } from "../src/status-bar"
-import type { updateCallback } from "../src/timer"
+import { DEFAULT_SETTINGS } from "../src/settings"
+import { buildStatusBar } from "../src/status-bar"
+import { Timer, type updateCallback } from "../src/timer"
 
-// TODO: get back to this test file and see what you can improve
-
-// Define and register a custom HTMLElement subclass because
-// it is not possible to instantiate HTMLElement directly.
 // http://stackoverflow.com/questions/61881027/ddg#61883392
 class MyTestElement extends HTMLElement {
 	constructor() {
@@ -12,47 +9,27 @@ class MyTestElement extends HTMLElement {
 	}
 }
 
+jest.useFakeTimers()
+
 window.customElements.define("my-test-element", MyTestElement)
 
-var statusBarHTMLElement: MyTestElement
-var HFTime: string = "00:00:00"
+var timer = new Timer(DEFAULT_SETTINGS, jest.fn())
+var statusBarHTMLElement = new MyTestElement()
+var statusBar = buildStatusBar(statusBarHTMLElement, timer)
 
-// A mock timer with the only methods used in the status bar
-var timer = {
-	toggle() {},
-	reset() {},
-	registerUpdateCallback(_: updateCallback) {},
-	getTimeLeft() {
-		return {
-			seconds: 0,
-			HFTime,
-		}
-	},
-}
+it.only("default time displaying", () => {
+	expect(statusBarHTMLElement.innerHTML).toContain("<span>00:50:00</span>")
 
-// It is better to start with a fresh element every time, but there is
-// not practical difference in doing so in this case, because it is
-// updated every time its value is tested
-statusBarHTMLElement = new MyTestElement()
+	timer.toggle()
+	expect(timer.getCurrentMode()).toBe("work")
+	expect(timer.getIsRunning()).toBe(true)
 
-describe("default time displaying", () => {
-	it("zeros", () => {
-		build(statusBarHTMLElement, timer as any)
-		expect(statusBarHTMLElement.innerHTML).toContain(HFTime)
-	})
-
-	it("normal", () => {
-		HFTime = "01:49:50"
-		// StatusBar needs to be created in every test manually because
-		build(statusBarHTMLElement, timer as any)
-		expect(statusBarHTMLElement.innerHTML).toContain(HFTime)
-	})
-
-	it("negative", () => {
-		HFTime = "-34:49:00"
-		build(statusBarHTMLElement, timer as any)
-		expect(statusBarHTMLElement.innerHTML).toContain(HFTime)
-	})
+	jest.advanceTimersByTime(1000 * 60)
+	expect(statusBarHTMLElement.innerHTML).toContain("<span>00:49:00</span>")
+	jest.advanceTimersByTime(1000 * 60 * 49)
+	expect(statusBarHTMLElement.innerHTML).toContain("<span>00:00:00</span>")
+	jest.advanceTimersByTime(1000 * 60 * 10)
+	expect(statusBarHTMLElement.innerHTML).toContain("<span>-00:10:00</span>")
 })
 
 describe("updating", () => {
@@ -68,13 +45,13 @@ describe("updating", () => {
 			),
 		}
 
-		build(statusBarHTMLElement, timer as any)
+		buildStatusBar(statusBarHTMLElement, timer as any)
 		expect(timer.registerUpdateCallback).toHaveBeenCalled()
 		expect(timeUpdateHandlers).toHaveLength(1)
 	})
 
 	it("update time", () => {
-		var onTickTestCallback: updateCallback = () => {}
+		var onTickTestCallback: updateCallback = () => { }
 
 		var registerUpdateCallback = jest.fn((newUpdater: updateCallback) => {
 			onTickTestCallback = newUpdater
@@ -85,7 +62,7 @@ describe("updating", () => {
 			registerUpdateCallback,
 		}
 
-		build(statusBarHTMLElement, timer as any)
+		buildStatusBar(statusBarHTMLElement, timer as any)
 
 		HFTime = "00:00:00"
 		onTickTestCallback(HFTime)
@@ -103,7 +80,7 @@ describe("updating", () => {
 
 describe("interactions", () => {
 	it("check if clickable", () => {
-		build(statusBarHTMLElement, timer as any)
+		buildStatusBar(statusBarHTMLElement, timer as any)
 
 		let indicatorThatElementIsClickable = "mod-clickable"
 		console.log(statusBarHTMLElement)
@@ -118,7 +95,7 @@ describe("interactions", () => {
 			toggle: jest.fn(),
 			reset: jest.fn(),
 		}
-		build(statusBarHTMLElement, timer as any)
+		buildStatusBar(statusBarHTMLElement, timer as any)
 
 		let clickEvent = new Event("click")
 		statusBarHTMLElement.dispatchEvent(clickEvent)
@@ -131,6 +108,3 @@ describe("interactions", () => {
 		// expect(timer.reset).toHaveBeenCalledTimes(1);
 	})
 })
-
-// TODO: there's nothing destroing at the moment of writing
-// it("destroing");

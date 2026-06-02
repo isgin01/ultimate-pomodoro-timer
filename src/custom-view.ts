@@ -3,7 +3,7 @@ import { ItemView, WorkspaceLeaf, setIcon } from "obsidian"
 import { type Timer } from "./timer"
 import { PluginSettings } from "settings"
 
-export const PLUGIN_CUSTOM_VIEW_ID = "better-pomodoro-view"
+export const PLUGIN_CUSTOM_VIEW_ID = "xxx-pomodoro-view"
 
 export class CustomView extends ItemView {
 	private timer: Timer
@@ -122,7 +122,7 @@ export class CustomView extends ItemView {
 	}
 
 	getDisplayText() {
-		return "Pomodoro view"
+		return "Xxx pomodoro view"
 	}
 
 	async onClose() {

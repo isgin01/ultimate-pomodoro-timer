@@ -1,7 +1,7 @@
 import * as statusBar from "./status-bar"
 import { type App, PluginSettingTab, Setting, type HexString } from "obsidian"
 import type BetterPomodoroPlugin from "./main"
-import { playSound } from "sound"
+import { playSound } from "./sound"
 
 export type PluginSettings = {
 	workDurationSecs: number
@@ -217,17 +217,14 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 			.setName("Custom Notification Sound")
 			.setDesc("A file inside the vault")
 			.addButton((component) => {
-				component
-					.setButtonText("Check audio")
-					.setDisabled(!this.plugin.settings.customNotificationSound)
-					.onClick(() => {
-						var sound = this.plugin.getFile(
-							this.plugin.settings.customNotificationSound,
-						)
-						if (sound) {
-							playSound(sound)
-						}
-					})
+				component.setButtonText("Check audio").onClick(() => {
+					var sound = this.plugin.getFile(
+						this.plugin.settings.customNotificationSound,
+					)
+					if (sound) {
+						playSound(sound)
+					}
+				})
 			})
 			.addText((component) => {
 				component

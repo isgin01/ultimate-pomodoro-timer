@@ -1,6 +1,6 @@
 import { type PluginSettings } from "settings"
 import { Notice } from "obsidian"
-import { playSound } from "sound"
+import { playSound } from "./sound"
 
 export type updateCallback = (time?: string) => void
 

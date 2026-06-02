@@ -1,7 +1,7 @@
 import { Menu } from "obsidian"
 import { type Timer } from "./timer"
 
-export function build(el: HTMLElement, timer: Timer) {
+export function buildStatusBar(el: HTMLElement, timer: Timer) {
 	// Make the status bar clickable
 	el.className += " mod-clickable"
 
