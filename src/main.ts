@@ -112,7 +112,6 @@ export default class BetterPomodoroPlugin extends Plugin {
 		return ""
 	}
 
-	// TODO: show notification
 	notify(text: string): void {
 		if (this.settings.systemNotificationsPreferred) {
 			systemNotify(text)

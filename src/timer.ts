@@ -3,11 +3,6 @@ import { type PluginSettings } from "settings"
 type Event = "tick" | "elapsed" | "toggle"
 type Callback = (HFTime?: string) => void
 
-type EventHandler = {
-	event: Event
-	cb: Callback
-}
-
 type Mode = "work" | "break"
 
 type InitialState = {
@@ -25,7 +20,11 @@ export class Timer {
 	initSecsCount: number
 	secsLeft: number
 
-	private eventHandlers: EventHandler[] = []
+	private eventHandlers: { [key in Event]: Callback[] } = {
+		tick: [],
+		elapsed: [],
+		toggle: [],
+	}
 	private intervalId: number | undefined
 
 	constructor(settings: PluginSettings, initData?: InitialState) {
@@ -53,7 +52,7 @@ export class Timer {
 	}
 
 	registerEventHandler(event: Event, cb: Callback): void {
-		this.eventHandlers.push({ event, cb })
+		this.eventHandlers[event].push(cb)
 	}
 
 	toggle(): void {
@@ -108,11 +107,8 @@ export class Timer {
 		window.clearInterval(this.intervalId)
 	}
 
-	// TODO: this looks weird
 	private runEventHandlers(ev: Event) {
-		this.eventHandlers.forEach((h) =>
-			h.event == ev ? h.cb(this.HFTime) : undefined,
-		)
+		this.eventHandlers[ev].forEach((cb) => cb(this.HFTime))
 	}
 
 	get HFTime() {
