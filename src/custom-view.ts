@@ -102,7 +102,7 @@ export class CustomView extends ItemView {
 
 	private setElapsedCircleReach() {
 		this.elapsedTimeCircle.style.strokeDashoffset = String(
-			(this.timer.secsLeft / this.timer.initSecsCount) * 440,
+			(this.timer.remaining / this.timer.unmodified) * 440,
 		)
 	}
 
@@ -112,9 +112,5 @@ export class CustomView extends ItemView {
 
 	getDisplayText() {
 		return "Pomodoro timer view"
-	}
-
-	async onClose() {
-		// TODO:
 	}
 }

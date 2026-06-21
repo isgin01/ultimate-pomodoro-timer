@@ -4,15 +4,18 @@ import {
 	type PluginSettings,
 } from "./settings"
 import { CustomView, PLUGIN_CUSTOM_VIEW_ID } from "./custom-view"
-import { Notice, Plugin, TFile } from "obsidian"
+import { Plugin, TFile } from "obsidian"
 import StatusBar from "./status-bar"
-import { Timer } from "./timer"
+import { recoverableTimerState, Timer } from "./timer"
 import { playSound } from "./sound"
+import { notify } from "utils"
+
+const SAVED_SESSION_KEY = "isgin-timer-saved-session"
 
 export default class BetterPomodoroPlugin extends Plugin {
 	settings: PluginSettings
 	timer: Timer
-	sb: StatusBar
+	statusBar: StatusBar
 
 	async onload() {
 		await this.loadSettings()
@@ -29,15 +32,18 @@ export default class BetterPomodoroPlugin extends Plugin {
 
 		// TODO: Custom message template
 		this.timer.registerEventHandler("elapsed", () => {
-			this.notify(`Time has elapsed`)
+			notify(
+				this.settings.systemNotificationsPreferred,
+				`Time has elapsed`,
+			)
 		})
 
 		this.registerView(PLUGIN_CUSTOM_VIEW_ID, (leaf) => {
 			return new CustomView(leaf, this.timer, this.settings)
 		})
 
-		this.sb = new StatusBar(this.addStatusBarItem(), this.timer)
-		this.sb.alterVisibility(this.settings.showStatusBar)
+		this.statusBar = new StatusBar(this.addStatusBarItem(), this.timer)
+		this.statusBar.alterVisibility(this.settings.showStatusBar)
 
 		this.addCommand({
 			id: "toggle",
@@ -67,7 +73,7 @@ export default class BetterPomodoroPlugin extends Plugin {
 	}
 
 	onunload() {
-		// TODO:
+		// TODO: timer state saving
 	}
 
 	private async loadSettings() {
@@ -104,6 +110,14 @@ export default class BetterPomodoroPlugin extends Plugin {
 		await this.saveData(this.settings)
 	}
 
+	saveSession(s: recoverableTimerState) {
+		this.saveArbitrary(SAVED_SESSION_KEY, JSON.stringify(s))
+	}
+
+	private saveArbitrary(k: string, s: string) {
+		this.app.saveLocalStorage(k, s)
+	}
+
 	getFile(path: string) {
 		var aFile = this.app.vault.getAbstractFileByPath(path)
 		if (aFile instanceof TFile) {
@@ -111,27 +125,4 @@ export default class BetterPomodoroPlugin extends Plugin {
 		}
 		return ""
 	}
-
-	notify(text: string): void {
-		if (this.settings.systemNotificationsPreferred) {
-			systemNotify(text)
-		} else {
-			obsidianNotify(text)
-		}
-	}
-}
-
-/* eslint-disable */
-function systemNotify(text: string) {
-	var { Notification } = require("electron").remote
-
-	new Notification({
-		title: "Timer",
-		body: text,
-	}).show()
-}
-/* eslint-enable */
-
-function obsidianNotify(text: string) {
-	new Notice(text)
 }

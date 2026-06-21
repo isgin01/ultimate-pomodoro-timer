@@ -51,7 +51,7 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings()
 
 						this.plugin.reflectSettingsChange((ctx) => {
-							ctx.sb.alterVisibility(val)
+							ctx.statusBar.alterVisibility(val)
 						})
 					})
 			})
@@ -223,6 +223,8 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 					var sound = this.plugin.getFile(
 						this.plugin.settings.customNotificationSound,
 					)
+
+					// avoid playing the default sound
 					if (sound) {
 						playSound(sound)
 					}
@@ -240,7 +242,6 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 	}
 }
 
-// Check if given value is a valid amount of minutes
 export function validateNumericInput(i: string): false | number {
 	let num = Number(i)
 	if (isNaN(num)) {

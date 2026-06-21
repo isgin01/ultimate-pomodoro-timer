@@ -5,20 +5,18 @@ type Callback = (HFTime?: string) => void
 
 type Mode = "work" | "break"
 
-type InitialState = {
-	mode: Mode
-	initSecsCount: number
-	secsLeft: number
+export type recoverableTimerState = {
 	running: boolean
+	mode: Mode
+	unmodified: number
+	remaining: number
 }
 
 export class Timer {
-	private readonly settings: PluginSettings
-
 	running: boolean
 	mode: Mode
-	initSecsCount: number
-	secsLeft: number
+	unmodified: number
+	remaining: number
 
 	private eventHandlers: { [key in Event]: Callback[] } = {
 		tick: [],
@@ -27,14 +25,20 @@ export class Timer {
 	}
 	private intervalId: number | undefined
 
-	constructor(settings: PluginSettings, initData?: InitialState) {
+	constructor(
+		private readonly settings: PluginSettings,
+		initialState?: recoverableTimerState,
+	) {
 		this.settings = settings
 
-		if (initData) {
-			this.running = initData.running
-			this.mode = initData.mode
-			this.initSecsCount = initData.initSecsCount
-			this.secsLeft = initData.secsLeft
+		if (initialState) {
+			this.mode = initialState.mode
+			this.unmodified = initialState.unmodified
+			this.remaining = initialState.remaining
+
+			// Inverse the value to run toggle properly
+			this.running = !initialState.running
+			this.toggle()
 		} else {
 			this.running = false
 			this.mode = "work"
@@ -43,12 +47,12 @@ export class Timer {
 	}
 
 	private resetSecs() {
-		this.initSecsCount =
+		this.unmodified =
 			this.mode == "work"
 				? this.settings.workSecs
 				: this.settings.breakSecs
 
-		this.secsLeft = this.initSecsCount
+		this.remaining = this.unmodified
 	}
 
 	registerEventHandler(event: Event, cb: Callback): void {
@@ -77,10 +81,16 @@ export class Timer {
 		}, oneSecondMillis)
 	}
 
+	private stop(): void {
+		this.running = false
+
+		window.clearInterval(this.intervalId)
+	}
+
 	private tick(): void {
-		this.secsLeft--
+		this.remaining--
 		this.runEventHandlers("tick")
-		if (this.secsLeft == 0) {
+		if (this.remaining == 0) {
 			this.runEventHandlers("elapsed")
 
 			if (!this.settings.continueAfterTimeHasElapsed) {
@@ -101,24 +111,18 @@ export class Timer {
 		this.runEventHandlers("toggle")
 	}
 
-	private stop(): void {
-		this.running = false
-
-		window.clearInterval(this.intervalId)
-	}
-
 	private runEventHandlers(ev: Event) {
 		this.eventHandlers[ev].forEach((cb) => cb(this.HFTime))
 	}
 
 	get HFTime() {
 		var humanTime = ""
-		var savedSecs = this.secsLeft
+		var savedSecs = this.remaining
 
 		// Add a minus sign to the string if the second count is negative
 		// and make seconds positive to avoid getting minus signs when
 		// dividing
-		if (this.secsLeft < 0) {
+		if (this.remaining < 0) {
 			humanTime = "-"
 			savedSecs *= -1
 		}
@@ -135,5 +139,14 @@ export class Timer {
 		humanTime += paddedTimeUnits.join(":")
 
 		return humanTime
+	}
+
+	get recoverableState(): recoverableTimerState {
+		return {
+			running: this.running,
+			mode: this.mode,
+			unmodified: this.unmodified,
+			remaining: this.remaining,
+		}
 	}
 }
