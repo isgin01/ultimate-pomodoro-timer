@@ -20,6 +20,8 @@ export default class BetterPomodoroPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings()
 
+		// Timer
+
 		this.timer = new Timer(this.settings, this.recoverLastSession())
 
 		this.timer.registerEventHandler("elapsed", () => {
@@ -38,13 +40,30 @@ export default class BetterPomodoroPlugin extends Plugin {
 			)
 		})
 
+		// Widgets
+
+		this.addSettingTab(new BetterPomodoroSettingsTab(this.app, this))
+
 		this.registerView(PLUGIN_CUSTOM_VIEW_ID, (leaf) => {
 			return new CustomView(leaf, this.timer, this.settings)
 		})
 
-		this.statusBar = new StatusBar(this.addStatusBarItem(), this.timer)
-		this.statusBar.alterVisibility(this.settings.showStatusBar)
+		this.statusBar = new StatusBar(
+			this.addStatusBarItem(),
+			this.timer,
+			this.settings.showStatusBar,
+		)
 
+		// Commands
+
+		this.registerCommands()
+
+		this.app.workspace.on("quit", () => {
+			this.saveTimerSession(this.timer.recoverableState)
+		})
+	}
+
+	private registerCommands() {
 		this.addCommand({
 			id: "toggle",
 			name: "Toggle",
@@ -68,13 +87,9 @@ export default class BetterPomodoroPlugin extends Plugin {
 				this.timer.reset()
 			},
 		})
-
-		this.addSettingTab(new BetterPomodoroSettingsTab(this.app, this))
-
-		this.app.workspace.on("quit", () => {
-			this.saveTimerSession(this.timer.recoverableState)
-		})
 	}
+
+	unload() { }
 
 	private async loadSettings() {
 		this.settings = Object.assign(
