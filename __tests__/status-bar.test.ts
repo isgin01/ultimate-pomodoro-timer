@@ -6,6 +6,8 @@ class FakeStatusBar extends HTMLElement {
 	constructor() {
 		super()
 	}
+
+	setCssProps() { }
 }
 
 jest.useFakeTimers()
@@ -18,7 +20,7 @@ it("initialization", () => {
 
 	var timer = new Timer(settings)
 	var element = new FakeStatusBar()
-	new StatusBar(element, timer)
+	new StatusBar(element, timer, true)
 
 	expect(element.innerHTML).toBe("")
 	expect(element.innerText).toBe("00:40:00")
@@ -42,7 +44,7 @@ it("clicks", () => {
 	var timer = new Timer(settings)
 	var element = new FakeStatusBar()
 
-	new StatusBar(element, timer)
+	new StatusBar(element, timer, true)
 
 	expect(element.className).toContain("mod-clickable")
 

@@ -5,6 +5,7 @@ export default class StatusBar {
 	constructor(
 		private element: HTMLElement,
 		timer: Timer,
+		show: boolean,
 	) {
 		// Make the status bar clickable
 		element.className += " mod-clickable"
@@ -37,6 +38,8 @@ export default class StatusBar {
 		timeUpdateHandler(timer.HFTime)
 
 		timer.registerEventHandler("tick", timeUpdateHandler)
+
+		this.alterVisibility(show)
 	}
 
 	alterVisibility(show: boolean) {

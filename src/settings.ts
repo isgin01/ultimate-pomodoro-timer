@@ -19,7 +19,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	breakSecs: 10 * 60,
 	systemNotificationsPreferred: false,
 	continueAfterTimeHasElapsed: true,
-	showCustomView: true,
+	showCustomView: false,
 	showStatusBar: true,
 	customViewColors: { remaining: "#ff1700", elapsed: "#06ff00" },
 	playNotificationSound: true,
