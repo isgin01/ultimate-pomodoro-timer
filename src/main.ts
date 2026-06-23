@@ -2,15 +2,15 @@ import {
 	BetterPomodoroSettingsTab,
 	DEFAULT_SETTINGS,
 	type PluginSettings,
-} from "./settings"
-import { CustomView, CUSTOM_VIEW_ID } from "./custom-view"
-import { Plugin, TFile, WorkspaceLeaf } from "obsidian"
-import { Timer, recoverableTimerState } from "./timer"
-import buildStatusBarItem from "./status-bar"
-import { notify } from "utils"
-import { playSound } from "./sound"
+} from './settings'
+import { CustomView, CUSTOM_VIEW_ID } from './custom-view'
+import { Plugin, TFile, WorkspaceLeaf } from 'obsidian'
+import { Timer, recoverableTimerState } from './timer'
+import buildStatusBarItem from './status-bar'
+import { notify } from 'utils'
+import { playSound } from './sound'
 
-const SAVED_SESSION_KEY = "isgin-timer-saved-session"
+const SAVED_SESSION_KEY = 'isgin-timer-saved-session'
 
 export default class BetterPomodoroPlugin extends Plugin {
 	settings: PluginSettings
@@ -24,7 +24,7 @@ export default class BetterPomodoroPlugin extends Plugin {
 
 		this.timer = new Timer(this.settings, this.recoverLastSession())
 
-		this.timer.on(["elapsed"], () => {
+		this.timer.on(['elapsed'], () => {
 			// Settings can get changed during the timer run,
 			// so it's important to check
 			if (this.settings.playNotificationSound) {
@@ -33,7 +33,7 @@ export default class BetterPomodoroPlugin extends Plugin {
 		})
 
 		// TODO: Custom message template
-		this.timer.on(["elapsed"], () => {
+		this.timer.on(['elapsed'], () => {
 			notify(
 				this.settings.systemNotificationsPreferred,
 				`Time has elapsed`,
@@ -55,6 +55,10 @@ export default class BetterPomodoroPlugin extends Plugin {
 			this.settings.showStatusBar,
 		)
 
+		this.addRibbonIcon('timer', 'Show Pomodoro Timer', () => {
+			this.showCustomView()
+		})
+
 		// Commands
 
 		this.registerCommands()
@@ -68,29 +72,29 @@ export default class BetterPomodoroPlugin extends Plugin {
 			)
 		}
 
-		this.timer.on(["tick", "reset", "toggle"], saveSessionCb)
+		this.timer.on(['tick', 'reset', 'toggle'], saveSessionCb)
 	}
 
 	private registerCommands(): void {
 		this.addCommand({
-			id: "toggle",
-			name: "Toggle",
+			id: 'toggle',
+			name: 'Toggle',
 			callback: () => {
 				this.timer.toggle()
 			},
 		})
 
 		this.addCommand({
-			id: "switch",
-			name: "Switch",
+			id: 'switch',
+			name: 'Switch',
 			callback: () => {
 				this.timer.switch()
 			},
 		})
 
 		this.addCommand({
-			id: "reset",
-			name: "Reset",
+			id: 'reset',
+			name: 'Reset',
 			callback: () => {
 				this.timer.reset()
 			},
@@ -173,8 +177,8 @@ export default class BetterPomodoroPlugin extends Plugin {
 		if (aFile instanceof TFile) {
 			return this.app.vault.getResourcePath(aFile)
 		}
-		return ""
+		return ''
 	}
 
-	onunload() { }
+	onunload() {}
 }

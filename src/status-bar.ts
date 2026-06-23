@@ -1,6 +1,6 @@
-import { Menu } from "obsidian"
-import { type Timer } from "./timer"
-import { alterVisibility } from "./utils"
+import { Menu } from 'obsidian'
+import { type Timer } from './timer'
+import { alterVisibility } from './utils'
 
 export default function StatusBarItem(
 	element: HTMLElement,
@@ -8,9 +8,9 @@ export default function StatusBarItem(
 	show: boolean,
 ) {
 	// Make the status bar clickable
-	element.className += " mod-clickable"
+	element.className += ' mod-clickable'
 
-	element.addEventListener("click", () => {
+	element.addEventListener('click', () => {
 		timer.toggle()
 	})
 
@@ -19,13 +19,13 @@ export default function StatusBarItem(
 	let menu = new Menu()
 
 	menu.addItem((i) => {
-		i.setTitle("Reset").onClick(() => timer.reset())
+		i.setTitle('Reset').onClick(() => timer.reset())
 	})
 	menu.addItem((i) => {
-		i.setTitle("Switch").onClick(() => timer.switch())
+		i.setTitle('Switch').onClick(() => timer.switch())
 	})
 
-	element.addEventListener("auxclick", (ev) => {
+	element.addEventListener('auxclick', (ev) => {
 		menu.showAtMouseEvent(ev)
 	})
 
@@ -37,7 +37,7 @@ export default function StatusBarItem(
 
 	updateCb(timer.HFTime)
 
-	timer.on(["tick", "toggle", "reset"], updateCb)
+	timer.on(['tick', 'toggle', 'reset'], updateCb)
 
 	alterVisibility(element, show)
 }

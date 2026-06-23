@@ -1,4 +1,4 @@
-import { Notice } from "obsidian"
+import { Notice } from 'obsidian'
 
 export function notify(system: boolean, text: string) {
 	if (system) {
@@ -10,10 +10,10 @@ export function notify(system: boolean, text: string) {
 
 /* eslint-disable */
 function systemNotify(text: string) {
-	var { Notification } = require("electron").remote
+	var { Notification } = require('electron').remote
 
 	new Notification({
-		title: "Timer",
+		title: 'Timer',
 		body: text,
 	}).show()
 }
@@ -24,5 +24,5 @@ function obsidianNotify(text: string) {
 }
 
 export function alterVisibility(el: HTMLElement, show: boolean) {
-	el.setCssProps({ display: show ? "block" : "none" })
+	el.setCssProps({ display: show ? 'block' : 'none' })
 }

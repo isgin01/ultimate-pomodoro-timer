@@ -1,7 +1,7 @@
-export class Notice { }
+export class Notice {}
 export class Menu {
-	addItem() { }
-	showAtMouseEvent() { }
+	addItem() {}
+	showAtMouseEvent() {}
 }
 export class ItemView {
 	public containerEl: any
@@ -10,7 +10,7 @@ export class ItemView {
 		// return mock funcs returning reference to the object itself;
 		// used to simulate DOM manipulations
 		let mock: any = {
-			style: { strokeDashoffset: "", fill: "" },
+			style: { strokeDashoffset: '', fill: '' },
 			empty: jest.fn(),
 			createDiv: jest.fn(() => mock),
 			createSpan: jest.fn(() => mock),
@@ -23,5 +23,5 @@ export class ItemView {
 		this.containerEl = mock
 	}
 }
-export class PluginSettingTab { }
-export function setIcon() { }
+export class PluginSettingTab {}
+export function setIcon() {}
