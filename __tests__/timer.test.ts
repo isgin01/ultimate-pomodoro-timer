@@ -19,6 +19,7 @@ function getSettingsHelper(
 		CvColors: { remaining: '', elapsed: '' },
 		playNotificationSound: false,
 		customNotificationSound: '',
+		autostart: false,
 	}
 
 	return {
@@ -202,4 +203,19 @@ test('recoverable session state obtaining', () => {
 		unmodified: 10,
 		remaining: 10,
 	})
+})
+
+test('autostart', () => {
+	var timer = new Timer(
+		getSettingsHelper({ autostart: true, workSecs: 5, breakSecs: 10 }),
+	)
+
+	expect(timer.mode).toBe('work')
+	timer.toggle()
+	jest.advanceTimersByTime(1000 * 5)
+
+	expect(timer.mode).toBe('break')
+	expect(timer.running).toBe(true)
+	jest.advanceTimersByTime(1000 * 3)
+	expect(timer.remaining).toBe(7)
 })

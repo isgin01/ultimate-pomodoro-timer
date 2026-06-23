@@ -56,6 +56,8 @@ export default class BetterPomodoroPlugin extends Plugin {
 		)
 
 		this.addRibbonIcon('timer', 'Show Pomodoro Timer', () => {
+			this.settings.showCustomView = true
+			this.saveSettings()
 			this.showCustomView()
 		})
 
@@ -180,5 +182,5 @@ export default class BetterPomodoroPlugin extends Plugin {
 		return ''
 	}
 
-	onunload() {}
+	onunload() { }
 }

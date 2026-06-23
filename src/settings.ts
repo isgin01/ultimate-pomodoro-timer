@@ -9,6 +9,7 @@ export type PluginSettings = {
 	breakSecs: number
 	systemNotificationsPreferred: boolean
 	continueAfterTimeHasElapsed: boolean
+	autostart: boolean
 	showStatusBar: boolean
 	showCustomView: boolean
 	CvColors: CvColors
@@ -20,6 +21,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	workSecs: 50 * 60,
 	breakSecs: 10 * 60,
 	systemNotificationsPreferred: false,
+	autostart: false,
 	continueAfterTimeHasElapsed: true,
 	showCustomView: false,
 	showStatusBar: true,
@@ -82,7 +84,10 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 
 		// TODO: render inactive
 
-		new Setting(containerEl).setName('Custom view').setHeading()
+		new Setting(containerEl)
+			.setName('Custom view')
+			.setHeading()
+			.setDisabled(!this.plugin.showCustomView)
 
 		new Setting(containerEl)
 			.setName('Color for remaining time')
@@ -197,10 +202,27 @@ export class BetterPomodoroSettingsTab extends PluginSettingTab {
 			.addToggle((component) => {
 				component
 					.setValue(this.plugin.settings.continueAfterTimeHasElapsed)
-					.onChange(async (newValue: boolean) => {
+					.setDisabled(this.plugin.settings.autostart)
+					.onChange((newValue: boolean) => {
 						this.plugin.settings.continueAfterTimeHasElapsed =
 							newValue
-						await this.plugin.saveSettings()
+						void this.plugin.saveSettings()
+						this.display()
+					})
+			})
+
+		new Setting(containerEl)
+			.setName('Autostart after timer has elapsed')
+			.addToggle((component) => {
+				component
+					.setValue(this.plugin.settings.autostart)
+					.setDisabled(
+						this.plugin.settings.continueAfterTimeHasElapsed,
+					)
+					.onChange((value: boolean) => {
+						this.plugin.settings.autostart = value
+						void this.plugin.saveSettings()
+						this.display()
 					})
 			})
 
