@@ -1,5 +1,5 @@
 import { type App, PluginSettingTab, Setting } from 'obsidian'
-import type BetterPomodoroPlugin from './main'
+import type PomodoroPlugin from './main'
 import { playSound } from './sound'
 import { CvColors } from 'custom-view'
 import { alterVisibility, notify } from './utils'
@@ -43,10 +43,10 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 }
 
 export class BetterPomodoroSettingsTab extends PluginSettingTab {
-	private plugin: BetterPomodoroPlugin
+	private plugin: PomodoroPlugin
 	private settings: PluginSettings
 
-	constructor(app: App, plugin: BetterPomodoroPlugin) {
+	constructor(app: App, plugin: PomodoroPlugin) {
 		super(app, plugin)
 		this.plugin = plugin
 		this.settings = plugin.settings

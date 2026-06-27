@@ -12,7 +12,7 @@ import { playSound } from './sound'
 
 const SAVED_SESSION_KEY = 'isgin-timer-saved-session'
 
-export default class BetterPomodoroPlugin extends Plugin {
+export default class PomodoroPlugin extends Plugin {
 	settings: PluginSettings
 	timer: Timer
 	statusBarItem: HTMLElement
