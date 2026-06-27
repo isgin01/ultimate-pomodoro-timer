@@ -29,19 +29,16 @@ export default class PomodoroPlugin extends Plugin {
 		)
 
 		this.timer.on(['elapsed'], () => {
+			// TODO: Custom message template
+			notify(
+				this.settings.systemNotificationPreferred,
+				'Time has elapsed',
+			)
 			// Settings can get changed during the timer run,
 			// so it's important to check
 			if (this.settings.playNotificationSound) {
 				playSound(this.getFile(this.settings.customNotificationSound))
 			}
-		})
-
-		// TODO: Custom message template
-		this.timer.on(['elapsed'], () => {
-			notify(
-				this.settings.systemNotificationPreferred,
-				`Time has elapsed`,
-			)
 		})
 
 		// Widgets

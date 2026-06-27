@@ -1,7 +1,6 @@
 // 'Switch' is missing because 'toggle' is sufficient
 // Whenever 'switch' would be triggered, 'reset' would be too
 export type Event = 'tick' | 'elapsed' | 'toggle' | 'reset'
-type Callback = (HFTime?: string) => void
 
 export type Mode = {
 	name: string
@@ -27,7 +26,7 @@ export class Timer {
 	remaining: number
 
 	private currentModeIdx: number
-	private eventHandlers: { [key in Event]: Callback[] } = {
+	private eventHandlers: { [key in Event]: (() => void)[] } = {
 		tick: [],
 		elapsed: [],
 		toggle: [],
@@ -86,7 +85,7 @@ export class Timer {
 		this.remaining = this.unmodified
 	}
 
-	on(events: Event[], cb: Callback): void {
+	on(events: Event[], cb: () => void): void {
 		events.forEach((ev: Event) => this.eventHandlers[ev].push(cb))
 	}
 
@@ -100,6 +99,11 @@ export class Timer {
 		this.runEventHandlers('toggle')
 	}
 
+	private stop(): void {
+		this.running = false
+		window.clearInterval(this.intervalId)
+	}
+
 	private start(): void {
 		this.running = true
 
@@ -107,13 +111,10 @@ export class Timer {
 		// between NodeJS and Browser API
 		this.intervalId = window.setInterval(() => {
 			this.tick()
-			this.isElapsed()
+			if (this.isElapsed()) {
+				this.elapsed()
+			}
 		}, 1000)
-	}
-
-	private stop(): void {
-		this.running = false
-		window.clearInterval(this.intervalId)
 	}
 
 	private tick(): void {
@@ -121,17 +122,22 @@ export class Timer {
 		this.runEventHandlers('tick')
 	}
 
-	// TODO: refactor
-	private isElapsed(): void {
+	private isElapsed(): boolean {
 		if (this.remaining === 0) {
-			this.runEventHandlers('elapsed')
-			if (!this.params.keepRunning) {
-				this.switch()
-			}
+			return true
+		}
+		return false
+	}
 
-			if (this.params.autostart) {
-				this.toggle()
-			}
+	private elapsed(): void {
+		this.runEventHandlers('elapsed')
+
+		if (!this.params.keepRunning) {
+			this.switch()
+		}
+
+		if (this.params.autostart) {
+			this.toggle()
 		}
 	}
 
@@ -154,7 +160,7 @@ export class Timer {
 	}
 
 	private runEventHandlers(ev: Event) {
-		this.eventHandlers[ev].forEach(cb => cb(this.HFTime))
+		this.eventHandlers[ev].forEach(cb => cb())
 	}
 
 	get HFTime() {

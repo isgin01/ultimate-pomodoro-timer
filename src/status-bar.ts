@@ -29,13 +29,13 @@ export default function StatusBarItem(
 		menu.showAtMouseEvent(ev)
 	})
 
-	let updateCb = (HFTime: string) => {
-		element.innerText = HFTime
+	let updateCb = () => {
+		element.innerText = timer.HFTime
 	}
 
 	// Set initial value
 
-	updateCb(timer.HFTime)
+	updateCb()
 
 	timer.on(['tick', 'toggle', 'reset'], updateCb)
 

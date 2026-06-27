@@ -60,16 +60,21 @@ export class CustomView extends ItemView {
 
 		// TODO: work/break text
 
+		var modeContainer = container.createSpan({ cls: 'mode-container' })
+		modeContainer.innerText = timer.currentMode.name
+
+		this.timer.on(['reset'], () => {
+			modeContainer.innerText = timer.currentMode.name
+		})
+
 		var timeContainer = container.createSpan({ cls: 'time-container' })
 		timeContainer.innerText = timer.HFTime
-		this.timer.on(['tick', 'reset'], (HFTime: string) => {
-			timeContainer.innerText = HFTime
+		this.timer.on(['tick', 'reset'], () => {
+			timeContainer.innerText = timer.HFTime
 			this.setElapsedCircleReach()
 		})
 
 		// Buttons
-
-		// TODO: hover and click effects
 
 		var btnContainer = container.createDiv({ cls: 'btn-container' })
 

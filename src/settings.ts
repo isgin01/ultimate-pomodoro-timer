@@ -18,6 +18,7 @@ export type PluginSettings = {
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
+	// TODO: is it really needed?
 	// Use get to avoid the array from being used as a reference
 	get modes() {
 		return [
@@ -90,8 +91,6 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 						this.display()
 					})
 			})
-
-		// TODO: render inactive
 
 		new Setting(containerEl)
 			.setName('Custom view')
@@ -283,10 +282,12 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 
 		this.settings.modes
 			// Filter out non-unique values
-			// TODO: provide better names?
 			.filter(
-				(val1, idx, arr) =>
-					arr.findIndex(val2 => val2.name == val1.name) == idx,
+				(current, idx, arr) =>
+					arr.findIndex(
+						firstEncountered =>
+							firstEncountered.name == current.name,
+					) == idx,
 			)
 			.forEach(m1 => {
 				new Setting(containerEl)
@@ -310,10 +311,9 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 									})
 
 									await this.plugin.saveSettings()
-
-									if (!this.plugin.timer.running) {
-										this.plugin.timer.reset()
-									}
+									this.plugin.timer.setModes(
+										this.settings.modes,
+									)
 								}
 							})
 					})

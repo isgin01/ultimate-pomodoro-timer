@@ -27,10 +27,15 @@
 	flex-direction: column;
 }
 
+.mode-container {
+	margin: auto;
+	translate: 0px -114px;
+}
+
 .time-container {
 	margin: auto;
 	font-size: 1.35rem;
-	translate: 0px -93px;
+	translate: 0px -107px;
 }
 
 .btn-container {
@@ -45,4 +50,8 @@
 	border: none;
 	outline: none;
 	box-shadow: none;
+}
+
+.btn-container button:hover {
+	background-color: rgba(255, 255, 255, 0.05);
 }
