@@ -1,4 +1,3 @@
-import { DEFAULT_SETTINGS } from '../src/settings'
 import buildStatusBarElement from '../src/status-bar'
 import { Timer } from '../src/timer'
 
@@ -14,10 +13,17 @@ jest.useFakeTimers()
 
 window.customElements.define('fake-status-bar', FakeStatusBar)
 
-var settings = { ...DEFAULT_SETTINGS }
+var timerModes = [
+	{ name: 'work', secs: 50 * 60 },
+	{ name: 'break', secs: 10 * 60 },
+]
 
+var timerParams = {
+	stopWhenElapsed: false,
+	autostart: false,
+}
 it('initialization', () => {
-	var timer = new Timer(settings.modes, settings)
+	var timer = new Timer(timerModes, timerParams)
 	var element = new FakeStatusBar()
 	buildStatusBarElement(element, timer, true)
 
@@ -37,7 +43,7 @@ it('initialization', () => {
 })
 
 it('clicks', () => {
-	var timer = new Timer(settings.modes, settings)
+	var timer = new Timer(timerModes, timerParams)
 	var element = new FakeStatusBar()
 
 	buildStatusBarElement(element, timer, true)

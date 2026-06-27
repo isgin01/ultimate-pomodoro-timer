@@ -19,7 +19,7 @@ var standardModes = [
 
 function getParameters(propsNeededToRunSuccessfully?: Partial<Params>): Params {
 	let empty_settings: Params = {
-		stopWhenElapsed: false,
+		stopWhenElapsed: true,
 		autostart: false,
 	}
 
@@ -52,7 +52,7 @@ test('event handler func called correct amount of times', () => {
 	var timer = new Timer(
 		standardModes,
 		getParameters({
-			stopWhenElapsed: true,
+			stopWhenElapsed: false,
 		}),
 	)
 
@@ -83,7 +83,7 @@ test('HF time display', () => {
 			},
 		],
 		getParameters({
-			stopWhenElapsed: true,
+			stopWhenElapsed: false,
 		}),
 	)
 
@@ -159,7 +159,7 @@ test('recoverable session state obtaining', () => {
 			{ name: 'break', secs: 60 },
 		],
 		getParameters({
-			stopWhenElapsed: true,
+			stopWhenElapsed: false,
 		}),
 	)
 
