@@ -126,7 +126,7 @@ export class Timer {
 	private isElapsed(): void {
 		if (this.remaining === 0) {
 			this.runEventHandlers('elapsed')
-			if (!this.params.stopWhenElapsed) {
+			if (this.params.stopWhenElapsed) {
 				this.nextMode()
 			}
 
