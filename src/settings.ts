@@ -1,9 +1,12 @@
 import { type App, PluginSettingTab, Setting } from 'obsidian'
+import { alterVisibility, isProperNumber, notify } from './utils'
+import { CvColors } from 'custom-view'
+import { Mode } from './timer'
 import type PomodoroPlugin from './main'
 import { playSound } from './sound'
-import { CvColors } from 'custom-view'
-import { alterVisibility, notify, isProperNumber } from './utils'
-import { Mode } from './timer'
+
+// The non-deprecated app version is not widely released yet
+/*eslint-disable @typescript-eslint/no-deprecated*/
 
 export type PluginSettings = {
 	modes: Mode[]
@@ -85,7 +88,7 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings()
 
 						if (newValue) {
-							this.plugin.showCustomView()
+							void this.plugin.showCustomView()
 						} else {
 							this.plugin.hideCustomView()
 						}
@@ -230,7 +233,7 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 			.addText(component => {
 				component
 					.setValue(this.settings.notificationSoundPath)
-					.setPlaceholder('sound.wav')
+					.setPlaceholder('sound.wav') // eslint-disable-line
 					.onChange(async path => {
 						path = path.trim()
 						path = path.slice(0, 2) == './' ? path.slice(2) : path
@@ -248,7 +251,7 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 			.setDesc('Manage duration below after saving')
 			.addTextArea(component => {
 				component
-					.setPlaceholder('work,break,work,break,long')
+					.setPlaceholder('work,break,work,break,long') // eslint-disable-line
 					.setValue(tempValue)
 					.onChange(s => {
 						tempValue = s
@@ -273,7 +276,7 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 								secs: existing ? existing.secs : 0,
 							}
 						})
-						this.plugin.saveSettings()
+						void this.plugin.saveSettings()
 						this.plugin.timer.setModes(this.settings.modes)
 						this.display()
 					} else {
@@ -328,12 +331,12 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 			.setName('Reset mode settings')
 			.setDesc(
 				`Note that using this button would reset all your preferences related
-				to modes to default values`,
+				to modes to default values.`,
 			)
 			.addButton(component => {
 				component.setButtonText('Reset').onClick(() => {
 					this.settings.modes = DEFAULT_SETTINGS.modes
-					this.plugin.saveSettings()
+					void this.plugin.saveSettings()
 					this.plugin.timer.setModes(this.settings.modes)
 					this.display()
 				})

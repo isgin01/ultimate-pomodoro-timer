@@ -1,4 +1,4 @@
-import { ItemView, type WorkspaceLeaf, setIcon, type HexString } from 'obsidian'
+import { type HexString, ItemView, type WorkspaceLeaf, setIcon } from 'obsidian'
 import { type Timer } from './timer'
 
 export const CUSTOM_VIEW_ID = 'ultimate-pomodoro-view'
@@ -143,6 +143,6 @@ export class CustomView extends ItemView {
 	}
 
 	getDisplayText() {
-		return 'Ultimate Pomodoro view'
+		return 'Ultimate pomodoro view'
 	}
 }

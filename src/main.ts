@@ -1,9 +1,9 @@
+import { CUSTOM_VIEW_ID, CustomView } from './custom-view'
 import {
-	PomodoroSettingsTab,
 	DEFAULT_SETTINGS,
 	type PluginSettings,
+	PomodoroSettingsTab,
 } from './settings'
-import { CustomView, CUSTOM_VIEW_ID } from './custom-view'
 import { Plugin, TFile, WorkspaceLeaf } from 'obsidian'
 import { Timer, recoverableTimerState } from './timer'
 import buildStatusBarItem from './status-bar'
@@ -59,12 +59,12 @@ export default class PomodoroPlugin extends Plugin {
 		this.addRibbonIcon('timer', 'Toggle timer view', () => {
 			if (this.settings.showCustomView) {
 				this.settings.showCustomView = false
-				this.saveSettings()
+				void this.saveSettings()
 				this.hideCustomView()
 			} else {
 				this.settings.showCustomView = true
-				this.saveSettings()
-				this.showCustomView()
+				void this.saveSettings()
+				void this.showCustomView()
 			}
 		})
 
@@ -93,19 +93,19 @@ export default class PomodoroPlugin extends Plugin {
 		this.addCommand({
 			id: 'toggle',
 			name: 'Toggle',
-			callback: this.timer.toggle,
+			callback: () => this.timer.toggle(),
 		})
 
 		this.addCommand({
 			id: 'switch',
 			name: 'Switch',
-			callback: this.timer.switch,
+			callback: () => this.timer.switch(),
 		})
 
 		this.addCommand({
 			id: 'reset',
 			name: 'Reset',
-			callback: this.timer.reset,
+			callback: () => this.timer.reset(),
 		})
 	}
 
@@ -137,7 +137,7 @@ export default class PomodoroPlugin extends Plugin {
 				active: true,
 			})
 		}
-		workspace.revealLeaf(leaf)
+		void workspace.revealLeaf(leaf)
 	}
 
 	hideCustomView() {

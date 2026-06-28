@@ -6,7 +6,7 @@ class FakeStatusBar extends HTMLElement {
 		super()
 	}
 
-	setCssProps() { }
+	setCssProps() {}
 }
 
 jest.useFakeTimers()
