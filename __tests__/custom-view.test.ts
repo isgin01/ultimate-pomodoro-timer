@@ -11,7 +11,7 @@ test('init', () => {
 		DEFAULT_SETTINGS.CvColors,
 	)
 
-	expect(v.getDisplayText()).toBe('Ultimate Pomodoro view')
+	expect(v.getDisplayText()).toBe('Ultimate pomodoro view')
 	expect(v.getViewType()).toBe('ultimate-pomodoro-view')
 	expect(v.icon).toBe('timer')
 	expect(timer.running).toBe(false)
