@@ -1,11 +1,12 @@
-## What is it?
+![screenshot](./screenshot.png)
 
-A plugin for [Obsidian](https://obsidian.md/), a note-taking app.
+A plugin for Obsidian that offers standard Pomodoro timer features and customization options. Set your own timer modes, their sequence, duration, notification sound, colors, and more.
 
-## Why does it exist?
+Includes hideable status bar and panel widgets, as well as Command Palette entries.
 
-It adds a pomodoro timer functionality to the app.
+Future feature checklist:
 
-## Screenshots
-
-## Alternatives
+- [ ] Separate notification sound for each mode
+- [ ] Tasks view
+- [ ] Logging
+- [ ] More predefined shapes and custom shape support

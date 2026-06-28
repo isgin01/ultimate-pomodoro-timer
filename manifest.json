@@ -1,9 +1,9 @@
 {
-	"id": "customizable-pomodoro-timer",
-	"name": "Customizable Pomodoro Timer",
+	"id": "ultimate-pomodoro-timer",
+	"name": "Ultimate Pomodoro Timer",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "A pomodoro timer with customization features. Can be used as a statusbar, separate view, or from the command line. Allows to change colors, timer modes and their duration, notification sounds, etc.",
+	"description": "Manage your time without friction",
 	"author": "isgin01",
 	"authorUrl": "https://github.com/isgin01",
 	"isDesktopOnly": false

@@ -10,7 +10,7 @@ import buildStatusBarItem from './status-bar'
 import { notify } from './utils'
 import { playSound } from './sound'
 
-const SAVED_SESSION_KEY = 'customizable-pomodoro-saved-session'
+const SAVED_SESSION_KEY = 'ultimate-pomodoro-saved-session'
 
 export default class PomodoroPlugin extends Plugin {
 	settings: PluginSettings
