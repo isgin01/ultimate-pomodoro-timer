@@ -140,31 +140,27 @@ export default class PomodoroPlugin extends Plugin {
 		void workspace.revealLeaf(leaf)
 	}
 
-	hideCustomView() {
+	hideCustomView(): void {
 		var { workspace } = this.app
 		// Detaches all leaves in case more than one was created (by mistake)
 		workspace.detachLeavesOfType(CUSTOM_VIEW_ID)
 	}
 
-	async saveSettings() {
+	async saveSettings(): Promise<void> {
 		await this.saveData(this.settings)
 	}
 
-	/* eslint-disable */
 	private recoverLastSession(): recoverableTimerState | undefined {
-		let res = this.retrieveStored(SAVED_SESSION_KEY)
+		let res: string | null = this.retrieveStored(SAVED_SESSION_KEY)
 		if (res) {
-			return JSON.parse(res)
+			return JSON.parse(res) as recoverableTimerState
 		}
 		return
 	}
-	/* eslint-enable */
 
-	/* eslint-disable */
-	private retrieveStored(k: string): any | null {
-		return this.app.loadLocalStorage(k)
+	private retrieveStored(k: string): string | null {
+		return this.app.loadLocalStorage(k) as string | null
 	}
-	/* eslint-enable */
 
 	private preserveString(k: string, s: string): void {
 		this.app.saveLocalStorage(k, s)
