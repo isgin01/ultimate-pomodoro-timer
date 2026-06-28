@@ -8,16 +8,16 @@ export function notify(system: boolean, text: string) {
 	}
 }
 
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call -- suppress errors about calls to electron api*/
 function systemNotify(text: string) {
-	var { Notification } = require('electron').remote
+	var { Notification } = window.require('electron').remote
 
 	new Notification({
 		title: 'Timer',
 		body: text,
 	}).show()
 }
-/* eslint-enable */
+/* eslint-enable*/
 
 function obsidianNotify(text: string) {
 	new Notice(text)

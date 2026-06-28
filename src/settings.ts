@@ -5,8 +5,8 @@ import { Mode } from './timer'
 import type PomodoroPlugin from './main'
 import { playSound } from './sound'
 
-// The non-deprecated app version is not widely released yet
-/*eslint-disable @typescript-eslint/no-deprecated*/
+/* eslint "obsidianmd/ui/sentence-case": "warn" -- do not enforce as it isn't relevant here */
+/* eslint "@typescript-eslint/no-deprecated": "warn" -- suppress until the new app version is released */
 
 export type PluginSettings = {
 	modes: Mode[]
@@ -233,7 +233,7 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 			.addText(component => {
 				component
 					.setValue(this.settings.notificationSoundPath)
-					.setPlaceholder('sound.wav') // eslint-disable-line
+					.setPlaceholder('sound.wav')
 					.onChange(async path => {
 						path = path.trim()
 						path = path.slice(0, 2) == './' ? path.slice(2) : path
@@ -251,7 +251,7 @@ export class PomodoroSettingsTab extends PluginSettingTab {
 			.setDesc('Manage duration below after saving')
 			.addTextArea(component => {
 				component
-					.setPlaceholder('work,break,work,break,long') // eslint-disable-line
+					.setPlaceholder('work,break,work,break,long')
 					.setValue(tempValue)
 					.onChange(s => {
 						tempValue = s

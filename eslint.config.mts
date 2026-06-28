@@ -21,7 +21,7 @@ export default tseslint.config(
 	...obsidianmd.configs.recommended,
 	{
 		rules: {
-			'sort-imports': 'error',
+			'sort-imports': 'off',
 			'no-var': 'off',
 		},
 	},
